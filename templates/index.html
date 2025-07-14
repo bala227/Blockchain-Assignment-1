@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Blockchain Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+
+</head>
+
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen">
+  <div class="container mx-14 py-10">
+    <h1
+      class="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-16">
+      Blockchain Dashboard
+    </h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 ">
+      <!-- Left Sidebar -->
+      <div class="lg:col-span-1 space-y-10 ">
+        <!-- Connected Nodes -->
+        <div
+          class="space-y-10 bg-white bg-opacity-5 backdrop-blur-lg shadow-lg border border-white border-opacity-10 p-8 rounded-2xl">
+          <div>
+            <h2 class="text-2xl font-semibold mb-4 text-green-300 text-center">Connected Nodes</h2>
+            <div class="flex flex-wrap gap-1">
+              {% for node in peers %}
+              <span
+                class="bg-gradient-to-r from-blue-500 to-green-500 text-white px-3 py-1 rounded-full text-xs shadow">
+                {{ node }}
+              </span>
+              {% else %}
+              <p class="text-gray-400 ml-8">No peers registered.</p>
+              {% endfor %}
+            </div>
+          </div>
+          <!-- Buttons -->
+          <div class="space-y-4">
+            <button id="mineBtn"
+              class="w-full py-3 rounded-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+              Mine New Block
+            </button>
+
+            <button id="resolveBtn"
+              class="w-full py-3 rounded-full bg-gradient-to-r from-red-500 to-blue-600 hover:from-red-600 hover:to-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+              Resolve Conflicts
+            </button>
+          </div>
+        </div>
+        <!-- Message -->
+        <div id="messageBox" class="text-yellow-300 text-sm font-medium text-center"></div>
+
+
+        <!-- Add Transaction -->
+        <div class="mt-10">
+          <h2 class="text-2xl font-semibold mb-6 text-blue-300 text-center">Add Transaction</h2>
+
+          <form id="transactionForm"
+            class="space-y-5 p-6 rounded-xl bg-white bg-opacity-5 backdrop-blur-lg shadow-lg border border-white border-opacity-10">
+
+            <div class="flex flex-col">
+              <label for="sender" class="text-sm font-medium text-blue-200 mb-1">Sender</label>
+              <input type="text" id="sender" placeholder="e.g. Helixul"
+                class="px-4 py-2 rounded-lg bg-gray-900 bg-opacity-70 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200" />
+            </div>
+
+            <div class="flex flex-col">
+              <label for="recipient" class="text-sm font-medium text-blue-200 mb-1">Recipient</label>
+              <input type="text" id="recipient" placeholder="e.g. Bala"
+                class="px-4 py-2 rounded-lg bg-gray-900 bg-opacity-70 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200" />
+            </div>
+
+            <div class="flex flex-col">
+              <label for="amount" class="text-sm font-medium text-blue-200 mb-1">Amount</label>
+              <input type="number" id="amount" placeholder="e.g. 50"
+                class="px-4 py-2 rounded-lg bg-gray-900 bg-opacity-70 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200" />
+            </div>
+
+            <button type="submit"
+              class="w-full py-3 mt-2 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+              Submit Transaction
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Content: Blockchain Blocks -->
+      <div class="lg:col-span-3 flex flex-wrap gap-6 justify-start items-start">
+
+        {% for block in chain %}
+        <div class="w-[300px] h-[400px] flex flex-col justify-between 
+            bg-gradient-to-br from-blue-600 via-teal-500 to-green-500 
+            p-6 rounded-xl shadow-xl transition-transform transform hover:scale-105 overflow-hidden">
+
+          <!-- Header -->
+          <div>
+            <h3 class="text-2xl font-bold mb-2">Block {{ block.index }}</h3>
+            <p class="text-sm text-gray-200 mb-2">Timestamp: {{ block.timestamp }}</p>
+            <p class="text-sm mb-1"><span class="font-semibold">Proof:</span> {{ block.proof }}</p>
+
+            <!-- Hash (truncate or wrap if needed) -->
+            <div class="text-xs text-gray-100 mb-3">
+              <span class="font-semibold">Previous Hash:</span>
+              <div
+                class="mt-1 w-full max-w-full overflow-x-auto whitespace-nowrap bg-black bg-opacity-20 px-2 py-1 rounded">
+                <code class="text-green-100 break-all inline-block">
+                  {{ block.previous_hash }}
+                </code>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Transactions Box -->
+          <div class="p-3 rounded-md bg-black bg-opacity-30 overflow-y-auto max-h-[160px] mt-auto">
+            <p class="font-semibold mb-2 text-green-200">Transactions</p>
+            <ul class="list-disc list-inside text-sm space-y-1">
+              {% for tx in block.transactions %}
+              <li>{{ tx.sender }} → {{ tx.recipient }} ({{ tx.amount }})</li>
+              {% else %}
+              <li>No transactions</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const messageBox = document.getElementById('messageBox');
+
+    document.getElementById('mineBtn').addEventListener('click', async () => {
+      messageBox.innerText = '⛏️ Mining block...';
+      const res = await fetch('/mine');
+      const data = await res.json();
+      messageBox.innerText = '✅ ' + data.message;
+      setTimeout(() => location.reload(), 2000);
+    });
+
+    document.getElementById('resolveBtn').addEventListener('click', async () => {
+      messageBox.innerText = '🔄 Resolving chain...';
+      const res = await fetch('/nodes/resolve');
+      const data = await res.json();
+      messageBox.innerText = '🧠 ' + data.message;
+      setTimeout(() => location.reload(), 3000);
+    });
+
+    // Handle Transaction Form
+    document.getElementById('transactionForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const sender = document.getElementById('sender').value;
+      const recipient = document.getElementById('recipient').value;
+      const amount = document.getElementById('amount').value;
+
+      const res = await fetch('/transactions/new', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          sender,
+          recipient,
+          amount
+        })
+      });
+
+      const data = await res.json();
+      messageBox.innerText = '📨 ' + data.message;
+
+      setTimeout(() => location.reload(), 3000);
+    });
+  </script>
+</body>
+
+</html>
