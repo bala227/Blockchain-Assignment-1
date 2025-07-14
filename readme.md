@@ -57,3 +57,9 @@ Register Nodes
 curl -X POST -H "Content-Type: application/json" \
   -d '{"nodes":["http://127.0.0.1:5000", "http://127.0.0.1:5002"]}' \
   http://127.0.0.1:5001/nodes/register
+```
+<img width="1808" height="898" alt="Screenshot 2025-07-14 220918" src="https://github.com/user-attachments/assets/e3e46395-27bb-4067-9eb9-aca1603ccd30" />
+<img width="448" height="574" alt="Screenshot 2025-07-14 221053" src="https://github.com/user-attachments/assets/5aaddab6-7e76-4624-a13c-22539c20daa4" />
+<img width="1798" height="882" alt="image" src="https://github.com/user-attachments/assets/bd60c144-7dda-48d4-80fb-97d28a676e58" />
+
+
