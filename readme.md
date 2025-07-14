@@ -36,8 +36,8 @@ This project demonstrates core blockchain concepts like proof-of-work, decentral
 ###  Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/blockchain-dashboard.git
-cd blockchain-dashboard
+git clone https://github.com/bala227/Blockchain-Assignment-1.git
+
 ```
 
 ###  Install Dependencies
